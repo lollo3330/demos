@@ -1,0 +1,127 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>env-osc</title>
+
+  <script type="importmap">
+    {
+      "imports": {
+        "@ixfx": "/ixfx/core.js",
+        "@ixfx/": "/ixfx/"
+      }
+    }
+  </script>
+</head>
+
+<body>
+
+  <style>
+    *,
+    *:before,
+    *:after,
+    html,
+    body {
+      box-sizing: border-box;
+    }
+
+    :root {
+      --hue: 200;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
+        "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+
+      --bg: hsl(var(--hue), 10%, 10%);
+      --fg: hsl(var(--hue), 100%, 90%);
+    }
+
+    html,
+    body {
+      box-sizing: border-box;
+      background-color: var(--bg);
+      color: var(--fg);
+      overflow: hidden;
+      user-select: none;
+      -webkit-user-select: none;
+      font-family: var(--font);
+      overscroll-behavior: contain;
+      cursor: crosshair;
+      width: 100%;
+      height: 100%;
+      margin: 0;
+    }
+
+    /* Rhythm circle */
+    .rhythm-circle {
+      position: fixed;
+      width: 80px;
+      height: 80px;
+
+      left: 50%;
+      top: 50%;
+
+      transform: translate(-50%, -50%) scale(1);
+
+      border: 2px solid var(--fg);
+      border-radius: 50%;
+
+      opacity: 0.7;
+
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* Moving balls */
+    .thing {
+      position: absolute;
+
+      width: 2em;
+      height: 2em;
+
+      border-radius: 50%;
+
+      left: 0;
+      top: 0;
+
+      background-color: var(--fg);
+
+      pointer-events: none;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    /* Hidden prototype used by JavaScript */
+    #proto-thing {
+      display: none;
+    }
+  </style>
+
+
+  <section>
+
+    <!-- Circle showing the rhythm of Spacebar presses -->
+    <div
+      class="rhythm-circle"
+      id="rhythm-circle">
+    </div>
+
+
+    <!-- Prototype used to create the moving balls -->
+    <div
+      class="thing"
+      id="proto-thing">
+    </div>
+
+  </section>
+
+
+  <script
+    type="module"
+    src="script copy 4.js">
+  </script>
+
+</body>
+
+</html>

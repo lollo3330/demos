@@ -26,24 +26,26 @@
       --radius: 0.3em;
     }
 
-    #thing{
-      background-color: pink;
-      width: 5em;
-      height: 5em;
-      border-radius: 50%;
-    }
-    
     body {
       background-color: var(--bg);
       padding: 2em;
       color: var(--fg);
       font-family: var(--font);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    #thing {
+      width: 10em;
+      height: 10em;
+      background-color: rgb(93, 6, 255);
+      border-radius: 50%;
     }
   </style>
-  <h1>env-starter</h1>
-  <p>(values are printed to console)</p>
   <div id="thing"></div>
-  <script type="module" src="script.js"></script>
+  <script type="module" src="copy2.js"></script>
 </body>
 
 </html>

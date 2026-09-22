@@ -1,0 +1,70 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>fan / wind</title>
+  <style>
+    *, *:before, *:after, html, body { box-sizing: border-box; }
+
+    :root {
+      --hue: 230;
+      --font: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --bg-idle: hsl(var(--hue), 10%, 10%);
+      --fg: hsl(var(--hue), 70%, 90%);
+    }
+
+    html, body { height: 100%; }
+
+    body {
+      background-color: var(--bg-idle);
+      color: var(--fg);
+      font-family: var(--font);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      user-select: none;
+      outline: none;
+    }
+
+    #hint {
+      position: fixed;
+      bottom: 2em;
+      left: 50%;
+      transform: translateX(-50%);
+      opacity: 0.6;
+      font-size: 0.9em;
+      letter-spacing: 0.02em;
+      text-align: center;
+      pointer-events: none;
+    }
+
+    #thing {
+      width: 10em;
+      height: 10em;
+      border-radius: 50%;
+      transform: scale(0);
+      opacity: 0;
+    }
+
+    /* The "charge" gradient the screen and ball move through together while
+       Space is held — several distinct blue shades, not a single hue just
+       fading to white. */
+    @keyframes charge-gradient {
+      0%   { background-color: hsl(235, 55%, 10%); }
+      25%  { background-color: hsl(228, 70%, 24%); }
+      50%  { background-color: hsl(215, 80%, 42%); }
+      75%  { background-color: hsl(200, 85%, 62%); }
+      100% { background-color: hsl(190, 70%, 88%); }
+    }
+  </style>
+</head>
+<body tabindex="0">
+  <div id="thing"></div>
+  <div id="hint">click here, then hold space — short taps make a big gust, long holds make a small one</div>
+
+  <script src="copy4.js"></script>
+</body>
+</html>
