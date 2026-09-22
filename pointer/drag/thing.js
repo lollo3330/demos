@@ -8,39 +8,64 @@ const settings = Object.freeze({
 
 /**
  * Define our thing
- * @typedef {{
+ * @typedef {Readonly<{
  *  position: Points.Point
- *  dragging: boolean
- *  mass: number
- *  id: number
- *  agitation: number
+ *  positionAtDragStart: Points.Point
+ *  cursorDragStart: Points.Point
+ *  cursorDragNow: Points.Point
+ *  dragDifference: Points.Point
  *  el: HTMLElement
- * }} Thing
+ * }>} Thing
  */
-
-/**
- * @typedef {{ 
- *  dragging: boolean
- *  position: Points.Point
- *  el: HTMLElement
- * }} Draggable
- */
-
 
 /**
  * Make use of data from `thing` somehow...
  * @param {Thing} thing 
  */
 export const use = (thing) => {
-  const { el, position, agitation } = thing;
+  const { el, position, cursorDragStart } = thing;
+
+  if (Points.isPlaceholder(cursorDragStart)) {
+    el.classList.remove(`dragging`);
+  } else {
+    el.classList.add(`dragging`);
+  }
 
   // Calculate top-left pos from relative center position
   Util.positionFromMiddle(el, position);
 
-  // Calculate rotatation based on 'agitation'
-  const rot = agitation * 360;
-  el.style.rotate = `${rot}deg`;
 };
+
+
+/**
+ * Helper function for when drag is done.
+ * @param {Thing} originalThing 
+ * @returns {Thing}
+ */
+export const onDragDone = (originalThing) => {
+  return Object.freeze({
+    ...originalThing,
+    positionAtDragStart: Points.Placeholder,
+    cursorDragNOw: Points.Placeholder,
+    cursorDragStart: Points.Placeholder
+  });
+};
+
+/**
+ * Helper function for when drag has started done.
+ * @param {Thing} originalThing 
+ * @param {Points.Point} cursorRelativePosition
+ * @returns {Thing}
+ */
+export const onDragStart = (originalThing, cursorRelativePosition) => {
+  return Object.freeze({
+    ...originalThing,
+    positionAtDragStart: originalThing.position,
+    cursorDragStart: cursorRelativePosition,
+    cursorDragNow: cursorRelativePosition,
+  });
+};
+
 
 /**
  * Updates a given thing based on state
@@ -49,33 +74,30 @@ export const use = (thing) => {
  * @returns {Thing}
  */
 export const update = (thing, ambientState) => {
-  const { agitationDecay } = settings;
-  let { agitation, dragging, mass } = thing;
+  const { cursorDragNow, cursorDragStart } = thing;
+  let { position } = thing;
 
-  if (dragging) {
-    // Expand agitation
-    agitation += Math.min(agitation, 0.001) * (1 - mass);
-  } else {
-    // Decay agitation
-    agitation *= agitationDecay;
+  let dragDifference = { x: 0, y: 0 };
+  if (!Points.isPlaceholder(cursorDragStart) && !Points.isPlaceholder(cursorDragNow)) {
+    // Difference between where drag was started and where pointer is at now
+    dragDifference = Points.subtract(cursorDragNow, cursorDragStart);
+
+    position = Points.sum(thing.positionAtDragStart, dragDifference);
   }
-
-  // Make sure we're within range
-  agitation = clamp(agitation, 0.0001, 1);
 
   // Return new Thing
   return Object.freeze({
     ...thing,
-    agitation
+    dragDifference,
+    position
   });
 };
 
 /**
  * Creates a new thing
- * @param {number} id
  * @returns {Thing}
  */
-export const create = (id) => {
+export const create = () => {
   const element = document.createElement(`div`);
   element.classList.add(`thing`);
   document.body.append(element);
@@ -85,12 +107,27 @@ export const create = (id) => {
   element.style.width = `${size}px`;
   element.style.height = `${size}px`;
 
+  const position = { x: Math.random(), y: Math.random() };
   return {
-    dragging: false,
-    mass,
-    id,
-    agitation: 0,
-    position: { x: Math.random(), y: Math.random() },
+    cursorDragNow: Points.Placeholder,
+    cursorDragStart: Points.Placeholder,
+    dragDifference: Points.Placeholder,
+    position: position,
+    positionAtDragStart: position,
     el: element
   };
+};
+
+
+/**
+ * Merge `changes` with `originalThing`. Works like `saveState`.
+ * @param {Thing} originalThing 
+ * @param {Partial<Thing>} changes 
+ * @returns Thing
+ */
+export const saveThingState = (originalThing, changes) => {
+  return Object.freeze({
+    ...originalThing,
+    ...changes
+  });
 };
